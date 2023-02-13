@@ -7,6 +7,5 @@ def main():
     board = Board()
     board.initialize_tiles()
     board.initialize_pieces()
-    
 if __name__ == "__main__":
     main()
