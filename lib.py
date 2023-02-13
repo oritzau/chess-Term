@@ -30,35 +30,39 @@ class Board:
         #White Pawns
         pawn_row = 7
         for j in range(1, 9):
-            temp_pawn = Pawn(self.get_tile_by_index(pawn_row, j), 0)
+            _ = Pawn(self.get_tile_by_index(pawn_row, j), 0)
 
         #White Rooks
-        temp_rook = Rook(self.get_tile_by_index(1, 1), 1)
-        temp_rook = Rook(self.get_tile_by_index(1, 8), 1)
+        _ = Rook(self.get_tile_by_index(1, 1), 1)
+        _ = Rook(self.get_tile_by_index(1, 8), 1)
         
         #Black Rooks
-        temp_rook = Rook(self.get_tile_by_index(8, 1), 0)
-        temp_rook = Rook(self.get_tile_by_index(8, 8), 0)
+        _ = Rook(self.get_tile_by_index(8, 1), 0)
+        _ = Rook(self.get_tile_by_index(8, 8), 0)
         
         #White Knights
-        temp_knight = Knight(self.get_tile_by_index(1, 2), 1)
-        temp_knight = Knight(self.get_tile_by_index(1, 7), 1)
+        _ = Knight(self.get_tile_by_index(1, 2), 1)
+        _ = Knight(self.get_tile_by_index(1, 7), 1)
         
         #Black Knights
-        temp_knight = Knight(self.get_tile_by_index(8, 2), 0)
-        temp_knight = Knight(self.get_tile_by_index(8, 7), 0)
+        _ = Knight(self.get_tile_by_index(8, 2), 0)
+        _ = Knight(self.get_tile_by_index(8, 7), 0)
         
         #White Bishops
-        temp_bishop = Bishop(self.get_tile_by_index(1, 3), 1)
-        temp_bishop = Bishop(self.get_tile_by_index(1, 6), 1)
+        _ = Bishop(self.get_tile_by_index(1, 3), 1)
+        _ = Bishop(self.get_tile_by_index(1, 6), 1)
         
         #Black Bishops
-        temp_bishop = Bishop(self.get_tile_by_index(8, 3), 0)
-        temp_bishop = Bishop(self.get_tile_by_index(8, 6), 0)
+        _ = Bishop(self.get_tile_by_index(8, 3), 0)
+        _ = Bishop(self.get_tile_by_index(8, 6), 0)
         
         #Queens
-        temp_queen = Queen(self.get_tile_by_index(1, 4), 1)
+        _ = Queen(self.get_tile_by_index(1, 4), 1)
         _ = Queen(self.get_tile_by_index(8, 4), 0)
+        
+        #Kings
+        _ = King(self.get_tile_by_index(1, 5), 1)
+        _ = King(self.get_tile_by_index(8, 5), 0)
 
     def get_tile_by_index(self, row: int, column: int) -> 'Tile':
         return self.__tiles[(row - 1)* 8 + (column - 1)]

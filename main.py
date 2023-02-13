@@ -7,6 +7,6 @@ def main():
     board = Board()
     board.initialize_tiles()
     board.initialize_pieces()
-    board.represent()
+    
 if __name__ == "__main__":
     main()
