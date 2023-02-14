@@ -5,10 +5,12 @@ def smart_range(start: int, stop: int) -> range:
     if start > stop:
         return range(start - 1, stop - 1, -1)
     return range(start + 1, stop + 1)
+ 
 
 class Board:
     def __init__(self) -> None:
         self.__tiles = []
+        self.__pieces = []
 
     def initialize_tiles(self) -> None:
         for i in range(1, 9):
@@ -25,44 +27,44 @@ class Board:
         #White Pawns
         pawn_row = 2
         for j in range(1, 9):
-            temp_pawn = Pawn(self.get_tile_by_index(pawn_row, j), 1)
+            self.__pieces.append(Pawn(self.get_tile_by_index(pawn_row, j), 1))
         
         #White Pawns
         pawn_row = 7
         for j in range(1, 9):
-            _ = Pawn(self.get_tile_by_index(pawn_row, j), 0)
+            self.__pieces.append(Pawn(self.get_tile_by_index(pawn_row, j), 0))
 
         #White Rooks
-        _ = Rook(self.get_tile_by_index(1, 1), 1)
-        _ = Rook(self.get_tile_by_index(1, 8), 1)
+        self.__pieces.append(Rook(self.get_tile_by_index(1, 1), 1))
+        self.__pieces.append(Rook(self.get_tile_by_index(1, 8), 1))
         
         #Black Rooks
-        _ = Rook(self.get_tile_by_index(8, 1), 0)
-        _ = Rook(self.get_tile_by_index(8, 8), 0)
+        self.__pieces.append(Rook(self.get_tile_by_index(8, 1), 0))
+        self.__pieces.append(Rook(self.get_tile_by_index(8, 8), 0))
         
         #White Knights
-        _ = Knight(self.get_tile_by_index(1, 2), 1)
-        _ = Knight(self.get_tile_by_index(1, 7), 1)
+        self.__pieces.append(Knight(self.get_tile_by_index(1, 2), 1))
+        self.__pieces.append(Knight(self.get_tile_by_index(1, 7), 1))
         
         #Black Knights
-        _ = Knight(self.get_tile_by_index(8, 2), 0)
-        _ = Knight(self.get_tile_by_index(8, 7), 0)
+        self.__pieces.append(Knight(self.get_tile_by_index(8, 2), 0))
+        self.__pieces.append(Knight(self.get_tile_by_index(8, 7), 0))
         
         #White Bishops
-        _ = Bishop(self.get_tile_by_index(1, 3), 1)
-        _ = Bishop(self.get_tile_by_index(1, 6), 1)
+        self.__pieces.append(Bishop(self.get_tile_by_index(1, 3), 1))
+        self.__pieces.append(Bishop(self.get_tile_by_index(1, 6), 1))
         
         #Black Bishops
-        _ = Bishop(self.get_tile_by_index(8, 3), 0)
-        _ = Bishop(self.get_tile_by_index(8, 6), 0)
+        self.__pieces.append(Bishop(self.get_tile_by_index(8, 3), 0))
+        self.__pieces.append(Bishop(self.get_tile_by_index(8, 6), 0))
         
         #Queens
-        _ = Queen(self.get_tile_by_index(1, 4), 1)
-        _ = Queen(self.get_tile_by_index(8, 4), 0)
+        self.__pieces.append(Queen(self.get_tile_by_index(1, 4), 1))
+        self.__pieces.append(Queen(self.get_tile_by_index(8, 4), 0))
         
         #Kings
-        _ = King(self.get_tile_by_index(1, 5), 1)
-        _ = King(self.get_tile_by_index(8, 5), 0)
+        self.__pieces.append(King(self.get_tile_by_index(1, 5), 1))
+        self.__pieces.append(King(self.get_tile_by_index(8, 5), 0))
 
     def get_tile_by_index(self, row: int, column: int) -> 'Tile':
         return self.__tiles[(row - 1)* 8 + (column - 1)]
@@ -78,7 +80,52 @@ class Board:
         row: int = int(query[1]) - 1
         column: int = letters.index(column_letter)
         return self.__tiles[row * 8 + column]
-            
+
+    def get_pieces_for_player(self, color: int) -> list:
+        return_list = []
+        for piece in self.__pieces:
+            if piece.color == color:
+                return_list.append(piece)
+        return return_list
+
+class Player:
+    def __init__(self, number: int, color: int, board: Board) -> None:
+        self.name = input(f"What would you like to be called, Player {number}: ")
+        self.color = color
+        self.pieces = []
+        self.in_check = False
+
+    def greet(self) -> None:
+        colors = ["black", "white"]
+        print(f"Greetings, {self.name}! You will be playing {colors[self.color]}.")
+
+    def select_start(self, board: Board) -> 'Tile':
+        while True:
+            selection = input(f"Select tile, {self.name} : ")
+            try:
+                selected_tile = board.get_tile(selection)
+                if selected_tile.piece.color == self.color:
+                    break
+                else:
+                    print("That tile is empty, or controlled by your opponent's piece")
+            except ValueError:
+                print("Something went wrong, double check your selection")
+                pass
+        return selected_tile
+    
+    def select_target(self, board: Board) -> 'Tile':
+        while True:
+            selection = input("Select target tile: ")
+            try:
+                selected_tile = board.get_tile(selection)
+                if selected_tile.occupied == False or selected_tile.piece.color != self.color:
+                    break
+                else:
+                    print("That tile is controlled by one of your pieces")
+            except ValueError:
+                print("Something went wrong, double check your selection")
+                pass
+        return selected_tile
 
 class Tile:
     #black = 0, white = 1
@@ -110,6 +157,7 @@ class Piece:
         self.tile.occupied = True
         self.color = color
         self.has_moved = False
+        self.is_king = False
 
     def __str__(self) -> str:
         colors = ["Black", "White"]
@@ -159,7 +207,7 @@ class Pawn(Piece):
             return True
         return False
 
-    def can_attack(self, other: Tile) -> bool:
+    def can_attack(self, other: Tile, board: Board) -> bool:
         valid_row = False
         valid_column = False
         valid_square = False
@@ -189,7 +237,7 @@ class Knight(Piece):
     def __str__(self) -> str:
         return super().__str__() + " Knight"
     
-    def can_move(self, other: Tile) -> bool:
+    def can_move(self, other: Tile, board: Board) -> bool:
         current_row, target_row = self.tile.get_row(), other.get_row()
         current_column, target_column = self.tile.get_column(), other.get_column()
         l_shape = False
@@ -203,7 +251,7 @@ class Knight(Piece):
             return True
         return False
 
-    def can_attack(self, other: Tile) -> bool:
+    def can_attack(self, other: Tile, board: Board) -> bool:
         current_row, target_row = self.tile.get_row(), other.get_row()
         current_column, target_column = self.tile.get_column(), other.get_column()
         l_shape = False
@@ -342,6 +390,7 @@ class Queen(Piece):
 class King(Piece):
     def __init__(self, start_tile: Tile, color: int) -> None:
         super().__init__(start_tile, color)
+        self.is_king = True
     
     def __str__(self) -> str:
         return super().__str__() + " King"
