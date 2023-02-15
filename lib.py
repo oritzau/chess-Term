@@ -1,3 +1,5 @@
+import random
+
 def smart_range(start: int, stop: int) -> range:
     #excludes start, includes stop, adjusts for lower stop than start
     if start == stop:
@@ -21,6 +23,13 @@ class Board:
                 else:
                     temp_tile = Tile(i, j, (j + 1) % 2)
                 self.__tiles.append(temp_tile)
+
+    def get_pieces_for_player(self, color: int) -> list:
+        return_list = []
+        for piece in self.__pieces:
+            if piece.color == color:
+                return_list.append(piece)
+        return return_list
 
     def initialize_pieces(self) -> None:
         
@@ -67,8 +76,10 @@ class Board:
         self.__pieces.append(King(self.get_tile_by_index(8, 5), 0))
 
     def get_tile_by_index(self, row: int, column: int) -> 'Tile':
-        return self.__tiles[(row - 1)* 8 + (column - 1)]
-    
+        try:    
+            return self.__tiles[(row - 1)* 8 + (column - 1)]
+        except IndexError:
+            return None
     #revisit this when Piece has been implemented, should show occupation status and what piece is on it
     def represent(self):
         for i in range(1, 9):
@@ -81,23 +92,34 @@ class Board:
         column: int = letters.index(column_letter)
         return self.__tiles[row * 8 + column]
 
-    def get_pieces_for_player(self, color: int) -> list:
-        return_list = []
-        for piece in self.__pieces:
-            if piece.color == color:
-                return_list.append(piece)
-        return return_list
+    
 
 class Player:
-    def __init__(self, number: int, color: int, board: Board) -> None:
+    def __init__(self, number: int) -> None:
         self.name = input(f"What would you like to be called, Player {number}: ")
-        self.color = color
         self.pieces = []
         self.in_check = False
+
+    def get_random_color() -> tuple:
+        colors = [0, 1]
+        random.shuffle(colors)
+        return (colors[0], colors[1])
 
     def greet(self) -> None:
         colors = ["black", "white"]
         print(f"Greetings, {self.name}! You will be playing {colors[self.color]}.")
+
+    def get_intention(self) -> int:
+        while True:
+            intent = input("Press '?' to enter info mode, '!' to enter play mode: ")
+            if intent.lower() == '?': #help
+                return 0
+            elif intent.lower() == '!': #play
+                return 1
+            elif intent.lower() == 'help':
+                return 2
+    def __str__(self) -> str:
+        return self.name
 
     def select_start(self, board: Board) -> 'Tile':
         while True:
@@ -108,10 +130,16 @@ class Player:
                     break
                 else:
                     print("That tile is empty, or controlled by your opponent's piece")
-            except ValueError:
+            except AttributeError or ValueError:
                 print("Something went wrong, double check your selection")
                 pass
         return selected_tile
+    
+    def is_check(self, king_location: 'Tile', board: Board) -> bool:
+        for piece in self.pieces:
+            if piece.can_attack(king_location, board):
+                return True
+        return False
     
     def select_target(self, board: Board) -> 'Tile':
         while True:
@@ -122,10 +150,12 @@ class Player:
                     break
                 else:
                     print("That tile is controlled by one of your pieces")
-            except ValueError:
+            except AttributeError or ValueError:
                 print("Something went wrong, double check your selection")
                 pass
         return selected_tile
+
+    
 
 class Tile:
     #black = 0, white = 1
@@ -148,7 +178,7 @@ class Tile:
         if self.occupied:
             return f"{letters[self.__column - 1]}{self.__row}, Piece: {str(self.piece)}"
         else:
-            return f"{letters[self.__column - 1]}{self.__row}"
+            return f"{letters[self.__column - 1]}{self.__row}, empty"
 
 class Piece:
     def __init__(self, start_tile: Tile, color: int) -> None:
@@ -339,7 +369,7 @@ class Rook(Piece):
             return True
         return False
     
-    def can__attack(self, other: Tile, board: Board) -> bool:
+    def can_attack(self, other: Tile, board: Board) -> bool:
         current_row, target_row = self.tile.get_row(), other.get_row()
         current_column, target_column = self.tile.get_column(), other.get_column()
         tiles_traveled = []
@@ -382,7 +412,7 @@ class Queen(Piece):
         if temp_bishop.can_attack(other, board):
             valid_attack = True
         temp_rook = Rook(self.tile, self.color)
-        if temp_rook.can__attack(other, board):
+        if temp_rook.can_attack(other, board):
             valid_attack = True
         Queen(self.tile, self.color)
         return valid_attack
@@ -416,8 +446,9 @@ class King(Piece):
         surrounding_tiles.append(board.get_tile_by_index(target_row, target_column + 1))
         surrounding_tiles.append(board.get_tile_by_index(target_row - 1, target_column))
         surrounding_tiles.append(board.get_tile_by_index(target_row + 1, target_column))
-        for tile in surrounding_tiles:
-            print(tile)
+        
+        surrounding_tiles = [i for i in surrounding_tiles if i is not None] #dropping None values
+
         if self.color == 0: #black
             if all(str(tile.piece) != "White King" for tile in surrounding_tiles) and is_1_square:
                 no_surrounding_king = True
@@ -450,8 +481,9 @@ class King(Piece):
         surrounding_tiles.append(board.get_tile_by_index(target_row, target_column + 1))
         surrounding_tiles.append(board.get_tile_by_index(target_row - 1, target_column))
         surrounding_tiles.append(board.get_tile_by_index(target_row + 1, target_column))
-        for tile in surrounding_tiles:
-            print(tile)
+        
+        surrounding_tiles = [i for i in surrounding_tiles if i is not None] #dropping None values
+
         if self.color == 0: #black
             if all(str(tile.piece) != "White King" for tile in surrounding_tiles) and is_1_square:
                 no_surrounding_king = True
