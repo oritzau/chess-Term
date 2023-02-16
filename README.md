@@ -1,5 +1,5 @@
-## Welcome to chessTerm! 
-### a lightweight, terminal based chess application which allows you to play against a local opponent or face off against yourself. 
+# Welcome to chessTerm! 
+#### A lightweight, terminal based chess application which allows you to play against a local opponent or face off against yourself. 
 
 ## Installation guide:
 
