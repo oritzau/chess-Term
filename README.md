@@ -15,6 +15,6 @@
 
 #### Once the game has begun, use '?' to enter info mode, where each board query in the form "c6", "d3", "H4" (not case sensitive) will return information about the selected tile. When you are ready to make your move, enter '!' to switch into play mode, where you will be prompted twice. Select a start tile using the same syntax, and move that piece to another tile by entering your target tile. Because chessTerm is not a visual simulator, pieces must be referenced by their location on the board rather than name.
 
-##### Disclaimer*: chessTerm was made over the course of a few weeks in about 15 hours by a CS student. If you encounter any bugs,especially gamebreaking ones, a ticket or PR would be greatly appreciated.
+##### Disclaimer*: chessTerm was made by a CS student. If you encounter any bugs, especially gamebreaking ones, a ticket or PR would be greatly appreciated.
 
 
