@@ -4,11 +4,11 @@
 ## Installation guide:
 
 ### Windows: 
-#### To start your chess adventure, make sure you have Python 3.10.x installed on your system by opening Command Prompt and using the command "python --version". Download and unzip the file. In command prompt, navigate to the unzipped file and run the command "python main.py".
+#### To start your chess adventure, make sure you have Python 3.10.x installed on your system by opening Command Prompt and using the command "python --version". Download and unzip the file. In command prompt, navigate to the unzipped file (likely in Downloads/chess-Term.zip/chess-Term/src) and run the command "python main.py".
 
 
 ### Linux/MacOS:
-#### To start your chess adventure, make sure you have Python 3.10.x installed on your system by opening Terminal (located in Applications -> Utilities -> Terminal on MacOS) and using the command "python3 --version". Download and unzip the file. In your terminal, navigate to the unzipped file and use the command "python3 main.py"
+#### To start your chess adventure, make sure you have Python 3.10.x installed on your system by opening Terminal (located in Applications -> Utilities -> Terminal on MacOS) and using the command "python3 --version". Download and unzip the file. In your terminal, navigate to the unzipped file likely in (Downloads/chess-Term.zip/chess-Term/src) and use the command "python3 main.py"
 
 ### How to play:
 #### chessTerm is best enjoyed with a friend as the game does not currently support online or AI opponents. When prompted, enter a name for each player and you will receive a color at random. 
