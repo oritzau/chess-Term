@@ -129,9 +129,9 @@ class Player:
                 if selected_tile.piece.color == self.color:
                     break
                 else:
-                    print("That tile is empty, or controlled by your opponent's piece")
+                    print("That tile controlled by your opponent's piece")
             except AttributeError or ValueError:
-                print("Something went wrong, double check your selection")
+                print("That tile is empty or does not exist")
                 pass
         return selected_tile
     
@@ -179,6 +179,10 @@ class Tile:
             return f"{letters[self.__column - 1]}{self.__row}, Piece: {str(self.piece)}"
         else:
             return f"{letters[self.__column - 1]}{self.__row}, empty"
+        
+    def show_less(self) -> str:
+        letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        return f"{letters[self.__column - 1]}{self.__row}"
 
 class Piece:
     def __init__(self, start_tile: Tile, color: int) -> None:
@@ -200,6 +204,7 @@ class Piece:
         other.piece = self
         if self.has_moved == False:
             self.has_moved = True
+        print(f"{str(self)} to {self.tile.show_less()}")
 
     def attack(self, other: Tile):
         self.tile.occupied = False
