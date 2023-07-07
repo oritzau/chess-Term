@@ -1,34 +1,25 @@
-from lib import Board, Player
+from lib import Board, Player, BLACK, WHITE
 
 def info(query: str, board: Board) -> str:
     return str(board.get_tile(query))
 
 def main():
     board = Board()
-    board.initialize_tiles()
-    board.initialize_pieces()
-    colors = Player.get_random_color()
-    p1 = Player(1)
-    p1.color = colors[0]
-    print()
-    p1.greet()
-    print()
-    p2 = Player(2)
-    print()
-    p2.color = colors[1]
-    p2.greet()
-    print()
+    board.setup()
+    p1, p2 = Player.create_two_players()
     p1.pieces = board.get_pieces_for_player(p1.color)
     p2.pieces = board.get_pieces_for_player(p2.color)
     turn_count = 1
     winner = False
     players = [p1, p2]
     for player in players:
-        if player.color == 1:
+        if player.color == WHITE:
             white_player = player
         else:
             black_player = player
     while winner == False:
+        board.represent()
+        board.print_game_state()
         if turn_count % 2 == 1:
             current_player = white_player
             other_player = black_player
@@ -52,7 +43,7 @@ def main():
             active_piece = current_tile.piece
             moving_into_check = False
             if active_piece.is_king:
-                if other_player.is_check(target_tile, board):
+                if other_player.has_check(target_tile, board):
                     print("\nCannot move into check!\n")
                     moving_into_check = True
             if target_tile.occupied and active_piece.can_attack(target_tile, board) and not moving_into_check:
@@ -70,7 +61,7 @@ def main():
         for piece in other_player.pieces:
             if piece.is_king:
                 king_location = piece.tile
-        if current_player.is_check(king_location, board):
+        if current_player.has_check(king_location, board):
             print("\nCheck!")
         turn_count += 1
     
