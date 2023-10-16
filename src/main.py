@@ -18,7 +18,6 @@ def main():
         else:
             black_player = player
     while winner == False:
-        board.represent()
         board.print_game_state()
         if turn_count % 2 == 1:
             current_player = white_player
